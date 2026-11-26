@@ -30,6 +30,7 @@
         <module>continew-system</module>
         <module>continew-plugin</module>
         <module>continew-common</module>
+        <module>continew-assistant</module>
         <module>continew-extension</module>
     </modules>
 
@@ -59,6 +60,12 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>continew-common</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>continew-assistant</artifactId>
                 <version>${revision}</version>
             </dependency>
 

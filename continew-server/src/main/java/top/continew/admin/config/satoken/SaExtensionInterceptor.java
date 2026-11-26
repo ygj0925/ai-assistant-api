@@ -22,6 +22,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
+import org.springframework.web.method.HandlerMethod;
 import top.continew.admin.auth.constant.AuthConstants;
 import top.continew.admin.common.context.UserContext;
 import top.continew.admin.common.context.UserContextHolder;
@@ -59,6 +60,11 @@ public class SaExtensionInterceptor extends SaInterceptor {
         HttpServletResponse response,
         Object handler) throws Exception {
         boolean flag = super.preHandle(request, response, handler);
+        // 消费者接口由独立的令牌和工作空间校验处理，不加载后台会话。
+        if (handler instanceof HandlerMethod method && method.getBeanType().getPackageName()
+            .startsWith("top.continew.admin.assistant.")) {
+            return flag;
+        }
         // AK/SK 请求已经由签名认证完成，不属于交互式登录 Session。
         if (!flag || OpenApiUtils.isSignParamExists() || !StpUtil.isLogin()) {
             return flag;

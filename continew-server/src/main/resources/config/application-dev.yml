@@ -28,15 +28,11 @@ server:
 spring.datasource:
   type: com.zaxxer.hikari.HikariDataSource
   # 请务必提前创建好名为 continew_admin 的数据库，如果使用其他数据库名请注意同步修改 DB_NAME 配置
-  url: jdbc:p6spy:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+  # 直接使用数据库驱动，避免 SQL 代理将会话和项目资料的参数写入开发日志。
+  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
   username: ${DB_USER:root}
   password: ${DB_PWD:123456}
-  driver-class-name: com.p6spy.engine.spy.P6SpyDriver
-  #  # PostgreSQL 配置
-  #  url: jdbc:p6spy:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?options=-c%20TimeZone=Asia/Shanghai&sslmode=prefer&channelBinding=prefer&stringtype=unspecified
-  #  username: ${DB_USER:postgres}
-  #  password: ${DB_PWD:123456}
-  #  driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+  driver-class-name: com.mysql.cj.jdbc.Driver
   # Hikari 连接池配置
   hikari:
     # 最大连接数量（默认 10，根据实际环境调整）
