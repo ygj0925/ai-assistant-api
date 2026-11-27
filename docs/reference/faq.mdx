@@ -40,7 +40,7 @@ Wrapper 首次运行要从 `repo.maven.apache.org` 下载 Maven 3.9.16，网络�
 按顺序排查。
 
 1. 确认 MySQL 已启动且监听 3306；
-2. 确认已创建数据库，默认库名 `continew_admin`，改名需同步改 `DB_NAME`；
+2. 确认已创建数据库，默认库名 `ai_assistant`，改名需同步改 `DB_NAME`；
 3. dev 环境数据源默认账号 `root` / `123456`，本机密码不同就用 `DB_USER`、`DB_PWD` 环境变量覆盖，不要直接改文件里的默认值提交上去。
 
 ### 启动即报 Redis 连接失败
@@ -99,21 +99,27 @@ Access Token 只存内存，刷新依赖 Refresh Token 的 HttpOnly Cookie。Coo
 
 ## 端口
 
-### 8000 或 18000 被占用
+### 18090 被占用
 
-报错特征为 `Port 8000 was already in use`。dev 端口 8000，prod 端口 18000。
+报错特征为 `Port 18090 was already in use`。dev 和 prod 默认均使用 18090。
 
-Windows 下 `netstat -ano | findstr :8000` 找到 PID 后在任务管理器结束；或修改对应 `application-*.yml` 的 `server.port`。改 dev 端口要同步改前端 `.env.development` 的 `VITE_API_BASE_URL`、`VITE_API_WS_URL`。
+Windows 下用 `netstat -ano | findstr :18090` 确认占用进程，或用 `SERVER_PORT` 指定其他端口。助手 Web 的 `ASSISTANT_API_ORIGIN`、移动端的 `EXPO_PUBLIC_ASSISTANT_API_ORIGIN` 需要同步更新；使用管理前端时，同时更新其 `VITE_API_BASE_URL`、`VITE_API_WS_URL`。
+
+### 助手 Web 3000 能开但无法登录或聊天
+
+Web 默认将 `/api/assistant/v1` 转发到 `http://127.0.0.1:18090`。先确认助手后端已启动，数据库和 Redis 可连接，再检查 Web 进程的 `ASSISTANT_API_ORIGIN` 或 `.env.local`。旧终端环境变量会覆盖文件配置，修改后需重启 Web。
+
+桌面端的 `ASSISTANT_DESKTOP_WEB_ORIGIN` 指向 Web 地址 `http://127.0.0.1:3000`。注册还需要后端启用 `assistant.enabled` 和 `assistant.auth.registration-enabled`，聊天需要启用至少一个模型。
 
 ### 前端 5173 能开但接口全 404 / 网络错误
 
-dev server 把 `VITE_API_PREFIX`（默认 `/dev-api`）代理到 `VITE_API_BASE_URL`（默认 `http://localhost:8000`）。后端没启动、端口改过、或代理目标写错，都会表现为页面正常、接口全挂。
+dev server 把 `VITE_API_PREFIX`（默认 `/dev-api`）代理到 `VITE_API_BASE_URL`（默认 `http://localhost:18090`）。后端没启动、端口改过、或代理目标写错，都会表现为页面正常、接口全挂。
 
-先直接访问 `http://localhost:8000/v3/api-docs` 验证后端存活；再核对 `.env.development` 三个值与后端实际端口一致；改了 `.env` 要重启 dev server 才生效。
+先直接访问 `http://localhost:18090/v3/api-docs` 验证后端存活；再核对 `.env.development` 三个值与后端实际端口一致；改了 `.env` 要重启 dev server 才生效。
 
 ### WebSocket 连不上
 
-WebSocket 走 `/websocket` 路径，dev 直接连 `ws://localhost:8000`。经 Nginx 部署后连不上，基本是代理没转发 Upgrade 头。
+WebSocket 走 `/websocket` 路径，dev 直接连 `ws://localhost:18090`。经 Nginx 部署后连不上，基本是代理没转发 Upgrade 头。
 
 按仓库自带 nginx.conf 的后端站点配置，确认 `proxy_http_version 1.1` 与 `Upgrade`、`Connection` 两个头已设置；前端 `VITE_API_WS_URL` 生产用 `wss://`。
 

@@ -22,7 +22,7 @@ icon: Rocket
 开始前先建库。表结构和初始数据由 Liquibase 在首次启动时自动初始化，不需要手工执行任何 SQL。
 
 ```sql
-CREATE DATABASE continew_admin DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE ai_assistant DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 ```
 
 <Callout type="warn">
@@ -43,12 +43,12 @@ git clone https://github.com/continew-org/continew-admin.git
 </Step>
 <Step>
 
-核对连接配置。开发环境配置在 `continew-server/src/main/resources/config/application-dev.yml`，数据源默认连本机 3306 的 `continew_admin` 库（账号 `root` / `123456`），Redis 默认连本机 6379（密码 `123456`）。与你的环境不一致时，用环境变量覆盖，不要直接改配置文件后再误提交：
+核对连接配置。开发环境配置在 `continew-server/src/main/resources/config/application-dev.yml`，数据源默认连本机 3306 的 `ai_assistant` 库（账号 `root` / `123456`），Redis 默认连本机 6379（密码 `123456`）。与你的环境不一致时，用环境变量覆盖，不要直接改配置文件后再误提交：
 
 | 环境变量 | 默认值 | 说明 |
 |:---------|:-------|:-----|
 | `DB_HOST` / `DB_PORT` | `127.0.0.1` / `3306` | MySQL 地址 |
-| `DB_NAME` | `continew_admin` | 数据库名 |
+| `DB_NAME` | `ai_assistant` | 数据库名 |
 | `DB_USER` / `DB_PWD` | `root` / `123456` | 数据库账号 |
 | `REDIS_HOST` / `REDIS_PORT` | `127.0.0.1` / `6379` | Redis 地址 |
 | `REDIS_PWD` / `REDIS_DB` | `123456` / `0` | Redis 密码与库索引 |
@@ -69,7 +69,7 @@ IDEA 用户在运行配置的 Environment variables 里追加即可。Redis 没�
 </Step>
 <Step>
 
-验收。控制台输出 `ContiNew Admin server started successfully.` 即启动成功，随后会打印服务地址与接口文档地址。浏览器打开 `http://localhost:8000/doc.html`（NextDoc4j 文档界面），能看到接口分组，后端就是通的。
+验收。控制台输出 `ContiNew Admin server started successfully.` 即启动成功，随后会打印服务地址与接口文档地址。浏览器打开 `http://localhost:18090/doc.html`（NextDoc4j 文档界面），能看到接口分组，后端就是通的。
 
 </Step>
 </Steps>
@@ -92,7 +92,7 @@ pnpm install
 </Step>
 <Step>
 
-确认代理配置。`.env.development` 中 `VITE_API_PREFIX` 为 `/dev-api`，`VITE_API_BASE_URL` 为 `http://localhost:8000`，`vite.config.ts` 会把 `/dev-api` 前缀的请求代理到该地址并去掉前缀。后端端口改过的话，这里要同步改。
+确认代理配置。`.env.development` 中 `VITE_API_PREFIX` 为 `/dev-api`，`VITE_API_BASE_URL` 为 `http://localhost:18090`，`vite.config.ts` 会把 `/dev-api` 前缀的请求代理到该地址并去掉前缀。后端端口改过的话，这里要同步改。
 
 </Step>
 <Step>

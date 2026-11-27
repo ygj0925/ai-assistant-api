@@ -1,5 +1,7 @@
 # ContiNew Admin 多租户中后台管理框架
 
+本仓库作为青屿助手后端使用，默认数据库名为 `ai_assistant`，dev/prod 的 HTTP 端口统一为 `18090`，可通过 `DB_NAME` 和 `SERVER_PORT` 覆盖。对应 `ai-assistant` Web 的 `ASSISTANT_API_ORIGIN` 使用 `http://127.0.0.1:18090`，桌面页面仍加载 `http://127.0.0.1:3000`。生产环境需设置 `ASSISTANT_WEB_ORIGIN` 为实际 Web 的 HTTPS 源地址。PostgreSQL 配置、连接覆盖顺序和已有数据库的处理方式见 [环境与配置](docs/reference/environment.mdx)。
+
 <a href="https://github.com/continew-org/continew-admin" title="Current Version" target="_blank">
 <img src="https://img.shields.io/badge/RELEASE-v4.2.0-%23ff3f59.svg" alt="Current Version" />
 </a>

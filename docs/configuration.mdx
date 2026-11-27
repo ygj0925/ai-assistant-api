@@ -4,20 +4,21 @@ description: 了解 ContiNew Admin 配置文件的组织方式、环境变量注
 icon: Settings
 ---
 
-ContiNew Admin 后端的配置文件全部位于 `continew-server` 模块的 `src/main/resources/config/` 目录，共四份。本页只回答三个问题：配置怎么分文件、环境变量怎么注入、某个配置该归谁管。具体配置块的含义与取值去对应的任务页查，不在这里复述。
+ContiNew Admin 后端的配置文件全部位于 `continew-server` 模块的 `src/main/resources/config/` 目录，共五份。本页只回答三个问题：配置怎么分文件、环境变量怎么注入、某个配置该归谁管。具体配置块的含义与取值去对应的任务页查，不在这里复述。
 
 | 文件 | 激活方式 | 内容 |
 |:-----|:---------|:-----|
 | `application.yml` | 始终加载 | 通用配置，不含端口与凭据 |
-| `application-dev.yml` | 默认 profile（`PROFILES_ACTIVE` 缺省为 `dev`） | 本地开发，端口 8000，凭据带示例默认值 |
-| `application-prod.yml` | `PROFILES_ACTIVE=prod` | 生产环境，端口 18000，凭据无默认值 |
+| `application-dev.yml` | 默认 profile（`PROFILES_ACTIVE` 缺省为 `dev`） | 本地开发，端口 18090，凭据带示例默认值 |
+| `application-prod.yml` | `PROFILES_ACTIVE=prod` | 生产环境，端口 18090，凭据无默认值 |
+| `application-postgres.yml` | 与 dev/prod 组合，如 `PROFILES_ACTIVE=dev,postgres` | PostgreSQL 数据源及对应数据库迁移 |
 | `application-generator.yml` | `spring.profiles.include: generator` 固定引入 | 代码生成器排除表与类型映射 |
 
 ## dev 与 prod 的差异
 
 | 维度 | dev | prod |
 |:-----|:----|:-----|
-| 端口 | 8000 | 18000 |
+| 端口 | 18090 | 18090 |
 | 凭据 | 带示例默认值（如 `DB_PWD:123456`） | 无默认值，缺失即启动失败 |
 | SQL 监控 | 数据源经 P6Spy 代理（`jdbc:p6spy:mysql://`） | 直连驱动 `com.mysql.cj.jdbc.Driver` |
 | 跨域 | `allowed-origins: '*'` | 白名单化，仅 `${application.url}` |

@@ -122,7 +122,7 @@ docker/continew-admin/
 |:-----|:-----|:-----|:-----|
 | mysql | mysql:8.0.42 | 3306 | 业务数据库（含注释掉的 postgres:14.2 备选） |
 | redis | redis:7.2.8 | 6379 | 缓存与会话 |
-| continew-server | continew-server:4.2.0（本地构建） | 18000、17889 | 后端主服务，17889 为 Snail Job 客户端端口 |
+| continew-server | continew-server:4.2.0（本地构建） | 18090、17889 | 后端主服务，17889 为 Snail Job 客户端端口 |
 | continew-web | nginx:1.27.0 | 80、443 | 前端静态资源与后端反向代理 |
 | schedule-server | schedule-server（本地构建） | 18001、17888 | Snail Job 调度中心，可选 |
 
@@ -163,7 +163,7 @@ MySQL 与 Redis 配了健康检查，后端会等两者就绪后启动。首次�
 
 `docker/nginx/conf/nginx.conf` 采用双站点结构，前后端各一个 server 块，共用一套 SSL 证书。
 
-后端站点（`api.continew.top`）把请求反代到 `upstream admin-server`（`172.17.0.1:18000`），三个要点：
+后端站点（`api.continew.top`）把请求反代到 `upstream admin-server`（`172.17.0.1:18090`），三个要点：
 
 - `proxy_http_version 1.1` 配合 `Upgrade` 头转发，WebSocket（`/websocket`）才能工作；
 - `X-Forwarded-For` 显式覆盖为 `$remote_addr`，不信任客户端自带的转发头，防止伪造来源 IP 绕过限流；
@@ -226,7 +226,7 @@ location / {
 
 **基础设施**
 
-- [ ] MySQL 已建库（默认 `continew_admin`），字符集 utf8mb4；Liquibase 首次启动自动建表
+- [ ] MySQL 已建库（默认 `ai_assistant`），字符集 utf8mb4；Liquibase 首次启动自动建表
 - [ ] Redis 已设置密码，`bind` 不暴露公网
 - [ ] Nginx `client_max_body_size` 不小于后端上传上限
 - [ ] 日志目录（`/app/logs`）已挂载持久化，OOM 堆转储可回取

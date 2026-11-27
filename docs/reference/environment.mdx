@@ -19,7 +19,7 @@ spring:
       - generator
 ```
 
-端口不写死在通用配置里。dev 为 `8000`，prod 为 `18000`。
+dev 和 prod 的 HTTP 端口均默认为 `18090`，可通过 `SERVER_PORT` 覆盖。对应助手 Web 的 `ASSISTANT_API_ORIGIN` 需要使用相同端口。
 
 ### 环境变量
 
@@ -28,10 +28,12 @@ dev 环境的必需变量都有默认值，不注入也能启动。prod 环境�
 | 变量 | 作用 | dev 默认值 | prod |
 |:-----|:-----|:-----------|:-----|
 | `PROFILES_ACTIVE` | 启用的 profile | `dev` | 需设为 `prod` |
+| `SERVER_PORT` | 助手 HTTP 端口 | `18090` | 有回退 |
+| `ASSISTANT_WEB_ORIGIN` | Web 源地址，用于跨域及回调 | `http://127.0.0.1:3000` | 必填，使用实际 HTTPS 源地址 |
 | `DB_HOST` | MySQL 主机 | `127.0.0.1` | 有回退，按需注入 |
 | `DB_PORT` | MySQL 端口 | `3306` | 有回退 |
 | `DB_USER` | 数据库用户 | `root` | 有回退 |
-| `DB_NAME` | 数据库名 | `continew_admin` | 有回退 |
+| `DB_NAME` | 数据库名 | `ai_assistant` | 有回退 |
 | `DB_PWD` | 数据库密码 | `123456` | 必填，无默认值 |
 | `REDIS_HOST` | Redis 主机 | `127.0.0.1` | 有回退 |
 | `REDIS_PORT` | Redis 端口 | `6379` | 有回退 |
@@ -52,6 +54,14 @@ dev 环境的必需变量都有默认值，不注入也能启动。prod 环境�
 | `JUSTAUTH_ENABLED` | 是否启用第三方登录 | 配置中默认开启（凭据为空时对应平台不可用） | 默认 `false` |
 | `JUSTAUTH_<平台>_CLIENT_ID` | 第三方平台 Client ID | 空 | 启用该平台时必填 |
 | `JUSTAUTH_<平台>_SECRET` | 第三方平台 Client Secret | 空 | 启用该平台时必填 |
+
+### 助手 PostgreSQL 配置
+
+启用 `dev,postgres` 或 `prod,postgres` 后，`application-postgres.yml` 使用 PostgreSQL 驱动及对应 Liquibase changelog。默认连接 `127.0.0.1:25432/ai_assistant`，数据库用户默认为 `assistant`，密码仍由 `DB_PWD` 必填注入，与 `ai-assistant/infra/local` 的 Compose 配置对应。`DB_HOST`、`DB_PORT`、`DB_NAME`、`DB_USER` 可覆盖这些默认值；完整连接变量 `ASSISTANT_DB_JDBC_URL` 优先于前三项。
+
+默认 `dev` 配置继续使用 MySQL，库名同为 `ai_assistant`。修改配置不会创建或重命名现有数据库；新库需提前创建，Liquibase 在启动时初始化表。已有数据需要继续使用时，可通过 `DB_NAME` 或完整 JDBC URL 显式选择原库。
+
+Web 默认运行在 `3000`，桌面进程的 `ASSISTANT_DESKTOP_WEB_ORIGIN` 指向 Web，Web 进程的 `ASSISTANT_API_ORIGIN` 指向后端 `18090`。生产部署将两个地址替换为实际服务地址，并同步设置后端 `ASSISTANT_WEB_ORIGIN`；Docker Compose 的同名变量同样必填。变更 `SERVER_PORT` 后还需同步 Nginx 上游端口。
 
 <Callout type="warn">
 `REFRESH_TOKEN_SECRET` 必须是独立的高熵随机值，禁止与 `ACCESS_TOKEN_JWT_SECRET` 复用。dev 配置里的示例密钥只用于本地联调，生产环境必须全部替换。
@@ -83,7 +93,7 @@ Sa-Token 的 `timeout`、`active-timeout` 等参数不在 YAML 里维护，改�
 
 | 配置 | dev | prod |
 |:-----|:----|:-----|
-| `server.port` | `8000` | `18000` |
+| `server.port` | `18090` | `18090` |
 | `application.url` | `http://localhost:5173` | `https://admin.continew.top` |
 | 数据源驱动 | `com.p6spy.engine.spy.P6SpyDriver`（SQL 日志） | `com.mysql.cj.jdbc.Driver` |
 | `continew-starter.web.cors.allowed-origins` | `*` | 仅 `${application.url}` |
@@ -106,8 +116,8 @@ Sa-Token 的 `timeout`、`active-timeout` 等参数不在 YAML 里维护，改�
 | 变量 | 作用 | development | production |
 |:-----|:-----|:------------|:-----------|
 | `VITE_API_PREFIX` | 接口前缀，dev 下由 Vite 代理转发 | `/dev-api` | 不设置 |
-| `VITE_API_BASE_URL` | 后端接口地址 | `http://localhost:8000` | `https://api.continew.top` |
-| `VITE_API_WS_URL` | WebSocket 地址。`.env.test` 未预置，test 模式需自行补上，否则登录后消息通知不可用 | `ws://localhost:8000` | `wss://api.continew.top` |
+| `VITE_API_BASE_URL` | 后端接口地址 | `http://localhost:18090` | `https://api.continew.top` |
+| `VITE_API_WS_URL` | WebSocket 地址。`.env.test` 未预置，test 模式需自行补上，否则登录后消息通知不可用 | `ws://localhost:18090` | `wss://api.continew.top` |
 | `VITE_BASE` | 部署基础路径 | `/` | `/` |
 | `VITE_CLIENT_ID` | 登录时上报的客户端 ID，对应后端「客户端配置」 | `ef51c9a3e9046c4f2ea45142c8a8344a` | 同左 |
 | `VITE_APP_SETTING` | 控制配置抽屉内的外观区块，不隐藏齿轮入口 | `true` | `true` |

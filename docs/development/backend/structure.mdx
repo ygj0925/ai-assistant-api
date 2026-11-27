@@ -11,7 +11,7 @@ ContiNew Admin 分两个仓库。后端 continew-admin 是 Maven 多模块工程
 
 | 模块 | 职责 |
 |:-----|:-----|
-| `continew-server` | 打包部署入口：启动类 `top.continew.admin.ContiNewAdminApplication`、通用 Controller（验证码、工作台）、Liquibase 脚本、全部环境配置文件。dev 端口 8000，prod 端口 18000 |
+| `continew-server` | 打包部署入口：启动类 `top.continew.admin.ContiNewAdminApplication`、通用 Controller（验证码、工作台）、Liquibase 脚本、全部环境配置文件。dev 端口 18090，prod 端口 18090 |
 | `continew-system` | 核心业务：`auth`（系统认证）+ `system`（部门、角色、用户、菜单、字典、文件、公告、系统配置等） |
 | `continew-common` | 公共基类、工具与配置：CRUD 基类（`base`）、MyBatis、接口文档、Excel、全局异常（`config` 下对应子包） |
 | `continew-plugin` | 可插拔插件：`continew-plugin-open`（能力开放 AK/SK）、`continew-plugin-tenant`（多租户）、`continew-plugin-schedule`（任务调度）、`continew-plugin-generator`（代码生成器） |

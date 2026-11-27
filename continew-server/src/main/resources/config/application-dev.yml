@@ -1,7 +1,7 @@
 --- ### 应用配置
 application:
   # URL（跨域配置默认放行此 URL，第三方登录回调默认使用此 URL 为前缀，请注意更改为你实际的前端 URL）
-  url: http://localhost:5173
+  url: ${ASSISTANT_WEB_ORIGIN:http://127.0.0.1:3000}
 
 --- ### Refresh Token 配置
 continew-starter.refresh-token:
@@ -9,6 +9,8 @@ continew-starter.refresh-token:
   secret: 80B38761234D4D108BAF2022065FE6E6
   # 可配置精确 Origin 或 http[s]://*.example.com 子域通配符。
   cookie-allowed-origins:
+    - ${application.url}
+    - http://localhost:3000
     - http://localhost:5173
     - http://localhost:5777
   # 本地开发使用 HTTP，显式确认知情选择不安全 Cookie 传输，避免 Starter 启动告警。
@@ -21,15 +23,15 @@ sa-token:
 
 --- ### 服务器配置
 server:
-  # HTTP 端口（默认 8080）
-  port: 8000
+  # 助手 HTTP 端口，可通过 SERVER_PORT 覆盖
+  port: ${SERVER_PORT:18090}
 
 --- ### 数据源配置
 spring.datasource:
   type: com.zaxxer.hikari.HikariDataSource
-  # 请务必提前创建好名为 continew_admin 的数据库，如果使用其他数据库名请注意同步修改 DB_NAME 配置
+  # 提前创建 ai_assistant 数据库，使用其他库名时通过 DB_NAME 覆盖
   # 直接使用数据库驱动，避免 SQL 代理将会话和项目资料的参数写入开发日志。
-  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:ai_assistant}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
   username: ${DB_USER:root}
   password: ${DB_PWD:123456}
   driver-class-name: com.mysql.cj.jdbc.Driver

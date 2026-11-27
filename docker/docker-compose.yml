@@ -17,7 +17,7 @@ services:
       TZ: Asia/Shanghai
       MYSQL_ROOT_PASSWORD: 你的root用户密码
       # 初始化数据库（后续的初始化 SQL 会在这个库执行）
-      MYSQL_DATABASE: continew_admin
+      MYSQL_DATABASE: ${DB_NAME:-ai_assistant}
       #MYSQL_USER: 你的数据库用户名
       #MYSQL_PASSWORD: 你的数据库密码
     command:
@@ -44,7 +44,7 @@ services:
 #      TZ: Asia/Shanghai
 #      POSTGRES_USER: 你的用户名
 #      POSTGRES_PASSWORD: 你的用户密码
-#      POSTGRES_DB: continew_admin
+#      POSTGRES_DB: ${DB_NAME:-ai_assistant}
   redis:
     image: redis:7.2.8
     container_name: redis
@@ -80,7 +80,7 @@ services:
         max-size: "50m"
         max-file: "3"
     ports:
-      - '18000:18000'
+      - '${SERVER_PORT:-18090}:${SERVER_PORT:-18090}'
       - '17889:17889'
     volumes:
       - /docker/continew-admin/config/:/app/config/
@@ -90,11 +90,13 @@ services:
     environment:
       TZ: Asia/Shanghai
       PROFILES_ACTIVE: prod
+      SERVER_PORT: ${SERVER_PORT:-18090}
+      ASSISTANT_WEB_ORIGIN: ${ASSISTANT_WEB_ORIGIN:?Set the deployed assistant Web origin}
       DB_HOST: mysql
       DB_PORT: 3306
       DB_USER: 你的数据库用户名
       DB_PWD: 你的数据库密码
-      DB_NAME: continew_admin
+      DB_NAME: ${DB_NAME:-ai_assistant}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PWD: 你的 Redis 密码

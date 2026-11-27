@@ -1,7 +1,7 @@
 --- ### 应用配置
 application:
   # URL（跨域配置默认放行此 URL，第三方登录回调默认使用此 URL 为前缀，请注意更改为你实际的前端 URL）
-  url: https://admin.continew.top
+  url: ${ASSISTANT_WEB_ORIGIN}
   # 是否为生产环境
   production: true
 
@@ -20,19 +20,19 @@ continew-starter.refresh-token:
     - ${application.url}
 --- ### 服务器配置
 server:
-  # HTTP 端口（默认 8080）
-  port: 18000
+  # 助手 HTTP 端口，可通过 SERVER_PORT 覆盖
+  port: ${SERVER_PORT:18090}
 
 --- ### 数据源配置
 spring.datasource:
   type: com.zaxxer.hikari.HikariDataSource
-  # 请务必提前创建好名为 continew_admin 的数据库，如果使用其他数据库名请注意同步修改 DB_NAME 配置
-  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:continew_admin}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
+  # 提前创建 ai_assistant 数据库，使用其他库名时通过 DB_NAME 覆盖
+  url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:ai_assistant}?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true
   username: ${DB_USER:root}
   password: ${DB_PWD}
   driver-class-name: com.mysql.cj.jdbc.Driver
   #  # PostgreSQL 配置
-  #  url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:continew_admin}?options=-c%20TimeZone=Asia/Shanghai&sslmode=prefer&channelBinding=prefer&stringtype=unspecified
+  #  url: jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:5432}/${DB_NAME:ai_assistant}?options=-c%20TimeZone=Asia/Shanghai&sslmode=prefer&channelBinding=prefer&stringtype=unspecified
   #  username: ${DB_USER:postgres}
   #  password: ${DB_PWD:123456}
   #  driver-class-name: org.postgresql.Driver

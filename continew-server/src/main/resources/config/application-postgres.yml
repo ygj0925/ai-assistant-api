@@ -1,7 +1,8 @@
 spring:
   datasource:
-    url: ${ASSISTANT_DB_JDBC_URL}
-    username: ${DB_USER}
+    # 与 ai-assistant/infra/local 的默认数据库一致，完整 JDBC URL 优先。
+    url: ${ASSISTANT_DB_JDBC_URL:jdbc:postgresql://${DB_HOST:127.0.0.1}:${DB_PORT:25432}/${DB_NAME:ai_assistant}?stringtype=unspecified}
+    username: ${DB_USER:assistant}
     password: ${DB_PWD}
     driver-class-name: org.postgresql.Driver
   liquibase:
